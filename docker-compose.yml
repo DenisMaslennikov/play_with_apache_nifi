@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  apache-nifi:
+    build: ./apache-nifi
+    container_name: "apache-nifi"
+    volumes:
+      - ./apache-nifi/nifi_state:/opt/nifi/nifi-current/state
+      - ./apache-nifi/nifi_db:/opt/nifi/nifi-current/database_repository
+      - ./apache-nifi/nifi_flowfile:/opt/nifi/nifi-current/flowfile_repository
+      - ./apache-nifi/nifi_content:/opt/nifi/nifi-current/content_repository
+      - ./apache-nifi/nifi_provenance:/opt/nifi/nifi-current/provenance_repository
+    ports:
+      - 8080:8080
+      - 9999:9999
