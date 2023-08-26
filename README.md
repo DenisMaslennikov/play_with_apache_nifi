@@ -16,7 +16,7 @@ pip install -r requirements.txt
 ```commandline
 docker compose up
 ```
-Apache-nifi доступен по адресу http://127.0.0.1:8080/nifi
+Apache-nifi доступен по адресу http://127.0.0.1:8080/nifi  
 5. Запуск проекта
 ```commandline
 streamlit run app.py
