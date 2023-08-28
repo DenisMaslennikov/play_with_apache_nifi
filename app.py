@@ -23,15 +23,15 @@ groups_names = [
 st.title('Play with apache-nifi')
 
 with st.form('select nifi template'):
-    st.session_state['template'] = st.selectbox(
+    st.selectbox(
         'Выбор шаблона',
         options=templates_name,
-        key='template_name'
+        key='template_name',
     )
-    st.session_state['group'] = st.selectbox(
+    st.selectbox(
         'Выбор группы',
         options=groups_names,
-        key='group_name'
+        key='group_name',
     )
     st.form_submit_button(
         label='OK',
