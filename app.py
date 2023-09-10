@@ -8,37 +8,56 @@ MAX_PARAMETERS_AMOUNT = 100
 DEFAULT_PARAMETERS_AMOUNT = 1
 
 
-def parameter_name_string(index):
+def __parameter_name_string(index: int) -> str:
+    """
+    Генерирует название текстбокса для имени параметра
+    :param index: int
+    :return: str
+    """
     return f'parameter_name_{index}'
 
 
-def parameter_value_string(index):
+def __parameter_value_string(index: int) -> str:
+    """
+    Генерирует название текстбокса для значения параметра
+    :param index: int
+    :return: str
+    """
     return f'parameter_value_{index}'
 
 
-def parameter_description_string(index):
+def __parameter_description_string(index: int) -> str:
+    """
+    Генерирует название текстбокса для описания параметра
+    :param index: int
+    :return: str
+    """
     return f'parameter_description_{index}'
 
 
 nipyapi.config.nifi_config.host = 'http://127.0.0.1:8080/nifi-api'
 
-templates_names = [
+templates_names: list = [
     template.template.name
     for template in nipyapi.templates.list_all_templates().templates
 ]
 
-groups_names = [
+groups_names: list = [
     group.status.name
     for group in nipyapi.canvas.list_all_process_groups()
 ]
 
-parameters_context_names = [
+parameters_context_names: list = [
     param_group.component.name
     for param_group in nipyapi.parameters.list_all_parameter_contexts()
 ]
 
 
-def deploy_template():
+def deploy_template() -> None:
+    """
+    Добавляет выбранный шаблон в выбранную группу процессов
+    :return: None
+    """
     template = nipyapi.templates.get_template(st.session_state.template_name)
     group = nipyapi.canvas.get_process_group(
         st.session_state.group_name_for_template, greedy=False
@@ -46,7 +65,11 @@ def deploy_template():
     nipyapi.templates.deploy_template(template_id=template.id, pg_id=group.id)
 
 
-def setup_nifi_parameters_for_select_context():
+def setup_nifi_parameters_for_select_context() -> None:
+    """
+    Задает значения параметров для выбранного контекста
+    :return: None
+    """
     parameters_context = nipyapi.parameters.get_parameter_context(
         st.session_state.parameters_context_name, greedy=False
     )
@@ -55,11 +78,16 @@ def setup_nifi_parameters_for_select_context():
     nipyapi.parameters.update_parameter_context(parameters_context)
 
 
-def create_parameters_context(form):
-    parameters = []
+def create_parameters_context(form: st.form) -> None:
+    """
+    Создает новый контекст параметров
+    :param form: st.form форма для вывода сообщений об ошибках
+    :return: None
+    """
+    parameters: list = []
     for index in range(st.session_state.parameters_count):
-        name = st.session_state[parameter_name_string(index)]
-        if not (re.fullmatch('[a-zA-Z0-9 _-]+', name)):
+        name: str = st.session_state[__parameter_name_string(index)]
+        if not re.fullmatch('[a-zA-Z0-9 _-]+', name):
             form.error(
                 'Название параметра может содержать буквы a-Z, цифры и '
                 'символы -_'
@@ -67,8 +95,8 @@ def create_parameters_context(form):
             return
         parameters.append(nipyapi.parameters.prepare_parameter(
             name=name,
-            value=st.session_state[parameter_value_string(index)],
-            description=st.session_state[parameter_description_string(index)]
+            value=st.session_state[__parameter_value_string(index)],
+            description=st.session_state[__parameter_description_string(index)]
         ))
     nipyapi.parameters.create_parameter_context(
         name=st.session_state.context_name,
@@ -77,7 +105,11 @@ def create_parameters_context(form):
     )
 
 
-def assign_parameter_context_to_processor_group():
+def assign_parameter_context_to_processor_group() -> None:
+    """
+    Добавляет выбранный контекст параметров в выбранную группу процессов
+    :return: None
+    """
     group = nipyapi.canvas.get_process_group(
         st.session_state.group_name_for_parameter_context, greedy=False
     )
@@ -89,14 +121,22 @@ def assign_parameter_context_to_processor_group():
     )
 
 
-def remove_context_from_process_group():
+def remove_context_from_process_group() -> None:
+    """
+    Удаляет контекст параметров у выбранной группы процессов
+    :return: None
+    """
     group = nipyapi.canvas.get_process_group(
         st.session_state.group_name_for_context_remove, greedy=False
     )
     nipyapi.parameters.remove_context_from_process_group(group)
 
 
-def delete_parameter_context():
+def delete_parameter_context() -> None:
+    """
+    Удаляет выбранный контекст параметров
+    :return: None
+    """
     parameter_context = nipyapi.parameters.get_parameter_context(
         st.session_state.parameter_context_name_for_delete, greedy=True
     )
@@ -146,16 +186,16 @@ with left:
             with sub_left:
                 st.text_input(
                     label=f'Имя параметра #{index + 1}',
-                    key=parameter_name_string(index),
+                    key=__parameter_name_string(index),
                 )
             with sub_right:
                 st.text_input(
                     label=f'Значение параметра #{index + 1}',
-                    key=parameter_value_string(index),
+                    key=__parameter_value_string(index),
                 )
             st.text_area(
                 label='Описание параметра',
-                key=parameter_description_string(index),
+                key=__parameter_description_string(index),
 
             )
 
