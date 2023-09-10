@@ -1,16 +1,24 @@
 import re
 
-import streamlit as st
 import nipyapi
-
+import streamlit as st
 
 MIN_PARAMETERS_AMOUNT = 0
 MAX_PARAMETERS_AMOUNT = 100
 DEFAULT_PARAMETERS_AMOUNT = 1
 
-PARAMETER_NAME_STRING = lambda  index: f'parameter_name_{index}'
-PARAMETER_VALUE_STRING = lambda  index: f'parameter_value_{index}'
-PARAMETER_DESCRIPTION_STRING = lambda  index: f'parameter_description_{index}'
+
+def parameter_name_string(index):
+    return f'parameter_name_{index}'
+
+
+def parameter_value_string(index):
+    return f'parameter_value_{index}'
+
+
+def parameter_description_string(index):
+    return f'parameter_description_{index}'
+
 
 nipyapi.config.nifi_config.host = 'http://127.0.0.1:8080/nifi-api'
 
@@ -50,17 +58,17 @@ def setup_nifi_parameters_for_select_context():
 def create_parameters_context(form):
     parameters = []
     for index in range(st.session_state.parameters_count):
-        name = st.session_state[PARAMETER_NAME_STRING(index)]
-        if not(re.fullmatch('[a-zA-Z0-9 _-]+', name)):
+        name = st.session_state[parameter_name_string(index)]
+        if not (re.fullmatch('[a-zA-Z0-9 _-]+', name)):
             form.error(
                 'Название параметра может содержать буквы a-Z, цифры и '
                 'символы -_'
             )
-            return None
+            return
         parameters.append(nipyapi.parameters.prepare_parameter(
             name=name,
-            value=st.session_state[PARAMETER_VALUE_STRING(index)],
-            description=st.session_state[PARAMETER_DESCRIPTION_STRING(index)]
+            value=st.session_state[parameter_value_string(index)],
+            description=st.session_state[parameter_description_string(index)]
         ))
     nipyapi.parameters.create_parameter_context(
         name=st.session_state.context_name,
@@ -123,7 +131,7 @@ with left:
         value=DEFAULT_PARAMETERS_AMOUNT,
         key='parameters_count',
     )
-    create_context_form =st.form('Create NIFI parameters context')
+    create_context_form = st.form('Create NIFI parameters context')
     with create_context_form:
         st.text_input(
             label='Название контекста',
@@ -138,16 +146,16 @@ with left:
             with sub_left:
                 st.text_input(
                     label=f'Имя параметра #{index + 1}',
-                    key=PARAMETER_NAME_STRING(index),
+                    key=parameter_name_string(index),
                 )
             with sub_right:
                 st.text_input(
                     label=f'Значение параметра #{index + 1}',
-                    key=PARAMETER_VALUE_STRING(index),
+                    key=parameter_value_string(index),
                 )
             st.text_area(
                 label='Описание параметра',
-                key=PARAMETER_DESCRIPTION_STRING(index),
+                key=parameter_description_string(index),
 
             )
 
@@ -162,7 +170,6 @@ with right:
         'Выбор контекста параметров',
         options=parameters_context_names,
         key='parameters_context_name',
-
     )
     with st.form('Change NIFI parameters'):
         parameters_context = nipyapi.parameters.get_parameter_context(
@@ -174,8 +181,8 @@ with right:
         )
         for parameter in parameters_context.component.parameters:
             st.text_input(
-                parameter.parameter.name,
-                parameter.parameter.value,
+                label=parameter.parameter.name,
+                value=parameter.parameter.value,
                 help=parameter.parameter.description,
                 key=parameter.parameter.name,
             )
