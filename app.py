@@ -37,17 +37,17 @@ def __parameter_description_string(index: int) -> str:
 
 nipyapi.config.nifi_config.host = 'http://127.0.0.1:8080/nifi-api'
 
-templates_names: list = [
+templates_names: list[str] = [
     template.template.name
     for template in nipyapi.templates.list_all_templates().templates
 ]
 
-groups_names: list = [
+groups_names: list[str] = [
     group.status.name
     for group in nipyapi.canvas.list_all_process_groups()
 ]
 
-parameters_context_names: list = [
+parameters_context_names: list[str] = [
     param_group.component.name
     for param_group in nipyapi.parameters.list_all_parameter_contexts()
 ]
@@ -147,12 +147,12 @@ st.title('Play with apache-nifi')
 
 with st.form('select NIFI template'):
     st.selectbox(
-        'Выбор шаблона',
+        label='Выбор шаблона',
         options=templates_names,
         key='template_name',
     )
     st.selectbox(
-        'Выбор группы',
+        label='Выбор группы',
         options=groups_names,
         key='group_name_for_template',
     )
@@ -194,20 +194,20 @@ with left:
                     key=__parameter_value_string(index),
                 )
             st.text_area(
-                label='Описание параметра',
+                label=f'Описание параметра #{index + 1}',
                 key=__parameter_description_string(index),
 
             )
 
         st.form_submit_button(
-            'OK',
+            label='OK',
             on_click=create_parameters_context,
             args=(create_context_form,),
         )
 
 with right:
     parameters_context_name = st.selectbox(
-        'Выбор контекста параметров',
+        label='Выбор контекста параметров',
         options=parameters_context_names,
         key='parameters_context_name',
     )
@@ -239,8 +239,8 @@ with left:
             key='group_name_for_parameter_context',
         )
         st.selectbox(
-            'Выбор контекста параметров',
-            parameters_context_names,
+            label='Выбор контекста параметров',
+            options=parameters_context_names,
             key='parameter_context_name_for_group',
         )
         st.form_submit_button(

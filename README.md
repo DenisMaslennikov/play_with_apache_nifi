@@ -1,6 +1,10 @@
 # Play with apache-nifi
-## Запуск
-1. Создание виртуального окружения:
+Проект - демонстрация возможностей API Apache-NIFI
+
+## Стек:
+Pyhon, Docker, Apache-NIFI, Streamlit
+## Запуск:
+1. Создание виртуального окружения
 ```commandline
 python -m venv venv
 ```

@@ -12,4 +12,3 @@ services:
       - ./apache-nifi/nifi_provenance:/opt/nifi/nifi-current/provenance_repository
     ports:
       - 8080:8080
-      - 9999:9999
