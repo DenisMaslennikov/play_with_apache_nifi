@@ -1,5 +1,5 @@
 # Play with apache-nifi
-Проект - демонстрация возможностей API Apache-NIFI
+Проект - демонстрация возможностей API Apache-NIFI.
 
 ## Стек:
 Pyhon, Docker, Apache-NIFI, Streamlit
@@ -20,7 +20,8 @@ pip install -r requirements.txt
 ```commandline
 docker compose up
 ```
-Apache-nifi доступен по адресу http://127.0.0.1:8080/nifi  
+Apache-nifi доступен по адресу http://127.0.0.1:8080/nifi
+Для корректной работы приложения требуется создать минимум 1 шаблон в apache nifi после запуска.
 5. Запуск проекта
 ```commandline
 streamlit run app.py
